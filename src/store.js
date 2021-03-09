@@ -7,7 +7,9 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
 
-    user: null,
+    status: '',
+    token: localStorage.getItem('token') || '',
+    user : {}
 
   },
   mutations: {
@@ -34,11 +36,15 @@ export default new Vuex.Store({
     login({commit}, user){
       return new Promise((resolve, reject) => {
         commit('auth_request')
-        axios({url: 'http://localhost:3000/login', data: user, method: 'POST' })
+        axios({url: 'http://localhost:3000/api/login', data: user, method: 'POST' })
         .then(resp => {
+          console.log(resp)
           const token = resp.data.token
-          const user = resp.data.user
+          const user = resp.data.user_data.name
+          const user_id = resp.data.user_data.id
           localStorage.setItem('token', token)
+          localStorage.setItem('user', user)
+          localStorage.setItem('user_id', user_id)
           axios.defaults.headers.common['Authorization'] = token
           commit('auth_success', token, user)
           resolve(resp)
@@ -54,7 +60,7 @@ export default new Vuex.Store({
   register({commit}, user){
     return new Promise((resolve, reject) => {
       commit('auth_request')
-      axios({url: 'http://localhost:3000/register', data: user, method: 'POST' })
+      axios({url: 'http://localhost:3000/api/register', data: user, method: 'POST' })
       .then(resp => {
         const token = resp.data.token
         const user = resp.data.user
@@ -80,5 +86,10 @@ export default new Vuex.Store({
     })
   },
 
+  },
+
+  getters : {
+    isLoggedIn: state => !!state.token,
+    authStatus: state => state.status,
   }
 })

@@ -28,11 +28,13 @@
       <v-spacer></v-spacer>
 
       <v-btn
-        href="https://github.com/vuetifyjs/vuetify/releases/latest"
+        
         target="_blank"
-        text
+        class="text-white"
       >
-        <span class="mr-2">REGISTER</span>
+       
+        <span  class="mr-2" v-if="isLoggedIn"><a class="text-white"  @click="logout" >Logout</a></span>
+         <span  class="mr-2" v-else><a class="text-white"   >Register</a></span>
         <v-icon>mdi-open-in-new</v-icon>
       </v-btn>
     </v-app-bar>
@@ -43,13 +45,25 @@
   </v-app>
 </template>
 
+<style scoped>
+text{
+  color: white;
+  font-weight: 500;
+}
+</style>
+
 <script>
-
-export default {
-  name: 'App',
-
-  data: () => ({
-    //
-  }),
-};
+  export default {
+    computed : {
+      isLoggedIn : function(){ return this.$store.getters.isLoggedIn}
+    },
+    methods: {
+      logout: function () {
+        this.$store.dispatch('logout')
+        .then(() => {
+          this.$router.push('/about')
+        })
+      }
+    },
+  }
 </script>

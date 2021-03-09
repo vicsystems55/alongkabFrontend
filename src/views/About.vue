@@ -31,39 +31,11 @@
     </v-card>
   </div>
 </template>
+
+
 <script>
-import axios from 'axios'
   export default {
-  created () {
 
-
-  },
-  methods: {
-
-     login() {
-
-
-
-      console.log(this.email)
-
-        axios
-        .post('http://localhost:1000/api/login', {
-          email: this.email,
-          password: this.password
-        })
-        .then(response => {
-          console.log(response);
-          this.$router.push('/') 
-        })
-        .catch(error => {
-          console.log(error)
-          this.errored = true
-        })
-        .finally(() => this.loading = false)
-      
-    }
-
-  },
     data: () => ({
 
       email: '',
@@ -77,5 +49,16 @@ import axios from 'axios'
         value => (value && value.length >= 3) || 'Min 3 characters',
       ],
     }),
+  
+    methods: {
+      login: function () {
+        let email = this.email
+        let password = this.password
+        console.log(email);
+        this.$store.dispatch('login', { email, password })
+       .then(() => this.$router.push('/'))
+       .catch(err => console.log(err))
+      }
+    }
   }
 </script>
